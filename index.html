@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Speedcubing Session Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --primary: #3b82f6;
+      --success: #22c55e;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 24px 16px;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 4px;
+    }
+    .header-text h1 { font-size: 1.75rem; font-weight: 700; color: #fff; }
+    .header-text p { color: var(--text-muted); font-size: 0.95rem; }
+
+    a.cstimer-link {
+      color: var(--primary);
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      transition: color 0.15s;
+    }
+    a.cstimer-link:hover { color: #60a5fa; }
+
+    /* Language Switcher */
+    .lang-switch {
+      display: inline-flex;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 2px;
+    }
+    .lang-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 5px 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .lang-btn.active {
+      background: var(--primary);
+      color: #fff;
+    }
+
+    /* Drag and Drop Zone */
+    .drop-zone {
+      border: 2px dashed var(--border);
+      border-radius: 12px;
+      background: var(--card-bg);
+      padding: 28px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .drop-zone:hover, .drop-zone.dragover {
+      border-color: var(--primary);
+      background: #1e293b80;
+    }
+    .drop-zone input { display: none; }
+    .drop-zone p { color: var(--text-muted); margin-top: 6px; font-size: 0.9rem; }
+
+    /* Loaded file badge inside drop-zone */
+    .file-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #0f172a;
+      border: 1px solid var(--border);
+      padding: 6px 14px;
+      border-radius: 20px;
+      font-family: monospace;
+      font-size: 0.9rem;
+      color: #e2e8f0;
+    }
+    .file-badge .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 8px var(--success);
+    }
+
+    /* Stats Grid Cards */
+    .stats-grid {
+      display: none;
+      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+      gap: 16px;
+    }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 20px;
+    }
+    .card h3 {
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 6px;
+    }
+    .card ul { list-style: none; display: flex; flex-direction: column; gap: 6px; font-size: 0.92rem; }
+    .card li { display: flex; justify-content: space-between; }
+    .card li span.val { font-family: monospace; font-weight: 600; color: #fff; }
+
+    /* Chart Containers */
+    .chart-box {
+      display: none;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+
+    /* Chart Header with embedded Toolbar */
+    .chart-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .chart-header h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+    .hist-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      background: #0f172a;
+      border: 1px solid var(--border);
+      padding: 6px 14px;
+      border-radius: 8px;
+    }
+    .toolbar-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.88rem;
+    }
+    .toolbar-group input[type="range"] {
+      width: 140px;
+      cursor: pointer;
+      accent-color: var(--primary);
+    }
+    .input-wrapper {
+      display: inline-flex;
+      align-items: center;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 2px 6px;
+    }
+    .input-wrapper input[type="number"] {
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 0.85rem;
+      font-weight: 600;
+      width: 50px;
+      text-align: right;
+      outline: none;
+    }
+    .input-wrapper span {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      margin-left: 3px;
+    }
+
+    .checkbox-label {
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.88rem;
+      color: var(--text);
+      user-select: none;
+    }
+    .checkbox-label input[type="checkbox"] {
+      cursor: pointer;
+      width: 15px;
+      height: 15px;
+      accent-color: var(--primary);
+    }
+
+    .canvas-wrapper {
+      position: relative;
+      height: 380px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="header-text">
+      <h1 id="tTitle">Speedcubing Session Analyzer</h1>
+      <p id="tSubtitle">Interactive charts, session trends, and WCA averages from your csTimer exports</p>
+    </div>
+    <div class="lang-switch">
+      <button class="lang-btn" id="btnRu" onclick="setLang('ru')">RU</button>
+      <button class="lang-btn active" id="btnEn" onclick="setLang('en')">EN</button>
+    </div>
+  </header>
+
+  <!-- Upload Area -->
+  <div class="drop-zone" id="dropZone">
+    <div id="dropInitial">
+      <h3 id="tDropTitle">Drag & drop csTimer .csv file here</h3>
+      <p id="tDropSub">or click to select file from your computer</p>
+    </div>
+    <div id="dropLoaded" style="display: none;">
+      <div class="file-badge">
+        <span class="dot"></span>
+        <span id="fileNameDisplay">times.csv</span>
+      </div>
+      <p id="tDropReplace">Click or drop another file to replace</p>
+    </div>
+    <input type="file" id="fileInput" accept=".csv">
+  </div>
+
+  <!-- Cards with Metrics -->
+  <div class="stats-grid" id="statsGrid">
+    <div class="card">
+      <h3 id="tCardVol">Data Volume & Penalties</h3>
+      <ul id="colVolume"></ul>
+    </div>
+    <div class="card">
+      <h3 id="tCardSingle">Single Metrics</h3>
+      <ul id="colSingle"></ul>
+    </div>
+    <div class="card">
+      <h3 id="tCardAo">Best WCA Averages</h3>
+      <ul id="colAverages"></ul>
+    </div>
+  </div>
+
+  <!-- Histogram with Integrated Toolbar -->
+  <div class="chart-box" id="histBox">
+    <div class="chart-header">
+      <h2 id="histTitle">Solves Distribution by Seconds</h2>
+      
+      <!-- Toolbar placed directly with histogram -->
+      <div class="hist-toolbar">
+        <div class="toolbar-group">
+          <label for="cutoffSlider" id="tCutoffLabel">Cutoff:</label>
+          <input type="range" id="cutoffSlider" min="6" max="180" step="0.5" value="25">
+          <div class="input-wrapper">
+            <input type="number" id="cutoffInput" min="6" max="600" step="0.5" value="25">
+            <span id="tCutoffUnit">s</span>
+          </div>
+        </div>
+
+        <div class="toolbar-group">
+          <label class="checkbox-label">
+            <input type="checkbox" id="showLabelsToggle" checked>
+            <span id="tShowLabels">Counts above bars</span>
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <div class="canvas-wrapper">
+      <canvas id="histChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Progress Chart -->
+  <div class="chart-box" id="trendBox">
+    <div class="chart-header">
+      <h2 id="trendTitle">Session Progress (WCA Trimmed Ao)</h2>
+    </div>
+    <div class="canvas-wrapper">
+      <canvas id="trendChart"></canvas>
+    </div>
+  </div>
+</div>
+
+<script>
+  let currentLang = localStorage.getItem('cubing_lang') || 'en';
+  let rawSolves = [];
+  let cachedAos = {};
+  let cachedBestAos = {};
+  let histChartInst = null;
+  let trendChartInst = null;
+
+  const csTimerLinkHtml = '<a href="https://cstimer.net/" target="_blank" rel="noopener noreferrer" class="cstimer-link" onclick="event.stopPropagation()">csTimer</a>';
+
+  const i18n = {
+    ru: {
+      title: 'Speedcubing Session Analyzer',
+      subtitle: `Интерактивные графики, динамика прогресса и WCA-статистика сборок из ${csTimerLinkHtml}`,
+      dropTitle: `Перетащи сюда .csv файл из ${csTimerLinkHtml}`,
+      dropSub: 'или нажми для выбора файла на компьютере',
+      dropReplace: 'Нажмите или перетащите другой файл для замены',
+      cutoffLabel: 'Отсечка:',
+      cutoffUnit: 'с',
+      showLabels: 'Числа на столбиках',
+      cardVol: 'Объем данных и штрафы',
+      cardSingle: 'Метрики Single',
+      cardAo: 'Лучшие WCA Средние',
+      totalSolves: 'Всего попыток:',
+      dnf: 'DNF (незачет):',
+      plus2: 'Штраф (+2):',
+      inDist: 'В гистограмме',
+      filtered: 'Отсеяно (фейлы/DNF):',
+      pb: 'PB (Single):',
+      mean: 'Среднее (Mean):',
+      median: 'Медиана:',
+      std: 'Станд. откл. (σ):',
+      worst: 'Худшее (без DNF):',
+      histTitle: 'Распределение успешных сборок по секундам',
+      trendTitle: 'Прогресс за всю сессию (WCA Trimmed Ao)',
+      histX: 'Группа времени (секунды)',
+      histY: 'Количество сборок',
+      trendX: 'Номер сборки (по порядку)',
+      trendY: 'Время (сек)',
+      tooltipSolve: 'Сборка #',
+      countLabel: 'Сборок:'
+    },
+    en: {
+      title: 'Speedcubing Session Analyzer',
+      subtitle: `Interactive charts, session trends, and WCA averages from your ${csTimerLinkHtml} exports`,
+      dropTitle: `Drag & drop ${csTimerLinkHtml} .csv file here`,
+      dropSub: 'or click to select file from your computer',
+      dropReplace: 'Click or drop another file to replace',
+      cutoffLabel: 'Cutoff:',
+      cutoffUnit: 's',
+      showLabels: 'Counts above bars',
+      cardVol: 'Data Volume & Penalties',
+      cardSingle: 'Single Metrics',
+      cardAo: 'Best WCA Averages',
+      totalSolves: 'Total solves:',
+      dnf: 'DNF (no finish):',
+      plus2: 'Penalty (+2):',
+      inDist: 'In distribution',
+      filtered: 'Filtered out (fails/DNF):',
+      pb: 'PB (Single):',
+      mean: 'Mean:',
+      median: 'Median:',
+      std: 'Std. Dev. (σ):',
+      worst: 'Worst (excl. DNF):',
+      histTitle: 'Solves Distribution by Seconds',
+      trendTitle: 'Session Progress (WCA Trimmed Ao)',
+      histX: 'Time Group (seconds)',
+      histY: 'Number of Solves',
+      trendX: 'Solve Number',
+      trendY: 'Time (s)',
+      tooltipSolve: 'Solve #',
+      countLabel: 'Solves:'
+    }
+  };
+
+  const barLabelPlugin = {
+    id: 'barLabelPlugin',
+    afterDatasetsDraw(chart, args, options) {
+      if (!options.show) return;
+      const { ctx, data } = chart;
+      ctx.save();
+      ctx.font = 'bold 11px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.fillStyle = '#cbd5e1';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'bottom';
+
+      chart.getDatasetMeta(0).data.forEach((bar, index) => {
+        const val = data.datasets[0].data[index];
+        if (val > 0) {
+          ctx.fillText(val, bar.x, bar.y - 3);
+        }
+      });
+      ctx.restore();
+    }
+  };
+
+  function setLang(lang) {
+    currentLang = lang;
+    localStorage.setItem('cubing_lang', lang);
+    document.getElementById('btnRu').classList.toggle('active', lang === 'ru');
+    document.getElementById('btnEn').classList.toggle('active', lang === 'en');
+    applyTranslations();
+    if (rawSolves.length) {
+      buildTrendChart();
+      updateDashboard();
+    }
+  }
+
+  function applyTranslations() {
+    const t = i18n[currentLang];
+    document.getElementById('tTitle').textContent = t.title;
+    document.getElementById('tSubtitle').innerHTML = t.subtitle;
+    document.getElementById('tDropTitle').innerHTML = t.dropTitle;
+    document.getElementById('tDropSub').textContent = t.dropSub;
+    document.getElementById('tDropReplace').textContent = t.dropReplace;
+    document.getElementById('tCutoffLabel').textContent = t.cutoffLabel;
+    document.getElementById('tCutoffUnit').textContent = t.cutoffUnit;
+    document.getElementById('tShowLabels').textContent = t.showLabels;
+    document.getElementById('tCardVol').textContent = t.cardVol;
+    document.getElementById('tCardSingle').textContent = t.cardSingle;
+    document.getElementById('tCardAo').textContent = t.cardAo;
+    document.getElementById('trendTitle').textContent = t.trendTitle;
+  }
+
+  const cutoffSlider = document.getElementById('cutoffSlider');
+  const cutoffInput = document.getElementById('cutoffInput');
+  const showLabelsToggle = document.getElementById('showLabelsToggle');
+
+  cutoffSlider.addEventListener('input', (e) => {
+    cutoffInput.value = parseFloat(e.target.value).toFixed(1);
+    if (rawSolves.length) updateDashboard();
+  });
+
+  cutoffInput.addEventListener('input', (e) => {
+    let val = parseFloat(e.target.value);
+    if (!isNaN(val) && val >= 5) {
+      cutoffSlider.value = Math.min(val, 180);
+      if (rawSolves.length) updateDashboard();
+    }
+  });
+
+  showLabelsToggle.addEventListener('change', () => {
+    if (rawSolves.length) updateDashboard();
+  });
+
+  const dropZone = document.getElementById('dropZone');
+  const fileInput = document.getElementById('fileInput');
+
+  dropZone.addEventListener('click', () => fileInput.click());
+  dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('dragover');
+    if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+  });
+  fileInput.addEventListener('change', (e) => {
+    if (e.target.files.length) handleFile(e.target.files[0]);
+  });
+
+  function parseTimeToken(token) {
+    if (!token) return { time: NaN, isDnf: false, isPlus2: false };
+    token = token.toString().trim();
+    const isDnf = token.startsWith('DNF');
+    const isPlus2 = token.endsWith('+') && !isDnf;
+    const clean = token.replace(/\+$/, '');
+
+    let timeVal = NaN;
+    if (isDnf) {
+      timeVal = Infinity;
+    } else if (clean.includes(':')) {
+      const parts = clean.split(':');
+      timeVal = parseFloat(parts[0]) * 60 + parseFloat(parts[1]);
+    } else {
+      timeVal = parseFloat(clean);
+    }
+    return { time: timeVal, isDnf, isPlus2 };
+  }
+
+  function handleFile(file) {
+    document.getElementById('fileNameDisplay').textContent = file.name;
+    document.getElementById('dropInitial').style.display = 'none';
+    document.getElementById('dropLoaded').style.display = 'block';
+
+    Papa.parse(file, {
+      header: true,
+      skipEmptyLines: true,
+      delimiter: ";",
+      complete: function(results) {
+        const data = results.data;
+        if (!data.length || !('Time' in data[0])) {
+          alert("Time column not found. Please export a CSV file from csTimer.");
+          return;
+        }
+
+        rawSolves = data.map((row, idx) => {
+          const parsed = parseTimeToken(row['Time']);
+          return {
+            no: row['No.'] || (idx + 1),
+            time: parsed.time,
+            isDnf: parsed.isDnf,
+            isPlus2: parsed.isPlus2
+          };
+        });
+
+        precomputeWcaAos();
+
+        document.getElementById('statsGrid').style.display = 'grid';
+        document.getElementById('histBox').style.display = 'block';
+        document.getElementById('trendBox').style.display = 'block';
+
+        buildTrendChart();
+        updateDashboard();
+      }
+    });
+  }
+
+  function computeWcaRollingAo(times, windowSize) {
+    const n = windowSize;
+    const result = new Array(times.length).fill(null);
+    if (times.length < n) return result;
+
+    const k = (n === 5 || n === 12) ? 1 : Math.ceil(0.05 * n);
+
+    for (let i = n - 1; i < times.length; i++) {
+      const window = times.slice(i - n + 1, i + 1);
+      window.sort((a, b) => a - b);
+
+      if (window[n - k - 1] === Infinity) {
+        result[i] = null;
+      } else {
+        let sum = 0;
+        for (let j = k; j < n - k; j++) sum += window[j];
+        result[i] = sum / (n - 2 * k);
+      }
+    }
+    return result;
+  }
+
+  function precomputeWcaAos() {
+    const times = rawSolves.map(s => s.time);
+    const total = rawSolves.length;
+    const windows = [5, 12, 100, 500, 1000];
+
+    cachedAos = {};
+    cachedBestAos = {};
+
+    windows.forEach(w => {
+      if (total >= w) {
+        const roll = computeWcaRollingAo(times, w);
+        cachedAos[w] = roll;
+        const valid = roll.filter(v => v !== null && !isNaN(v));
+        cachedBestAos[w] = valid.length ? `${Math.min(...valid).toFixed(2)} ${i18n[currentLang].cutoffUnit}` : 'DNF';
+      } else {
+        cachedAos[w] = null;
+        cachedBestAos[w] = 'N/A';
+      }
+    });
+  }
+
+  function getGradientColor(val, min, max) {
+    const t = Math.max(0, Math.min(1, (val - min) / (max - min || 1)));
+    let r, g, b;
+    if (t < 0.5) {
+      const f = t / 0.5;
+      r = Math.round(21 + (234 - 21) * f);
+      g = Math.round(128 + (179 - 128) * f);
+      b = Math.round(61 + (8 - 61) * f);
+    } else {
+      const f = (t - 0.5) / 0.5;
+      r = Math.round(234 + (239 - 234) * f);
+      g = Math.round(179 + (68 - 179) * f);
+      b = Math.round(8 + (68 - 8) * f);
+    }
+    return `rgb(${r}, ${g}, ${b})`;
+  }
+
+  function buildTrendChart() {
+    const t = i18n[currentLang];
+    const labels = rawSolves.map(s => s.no);
+    const cutoff = parseFloat(cutoffInput.value) || 25.0;
+
+    const datasets = [
+      { label: 'Ao5', data: cachedAos[5], borderColor: '#f59e0b', borderWidth: 1.5 },
+      { label: 'Ao12', data: cachedAos[12], borderColor: '#ef4444', borderWidth: 1.8 },
+      { label: 'Ao100', data: cachedAos[100], borderColor: '#3b82f6', borderWidth: 2.2 },
+      { label: 'Ao500', data: cachedAos[500], borderColor: '#a855f7', borderWidth: 2.5 },
+      { label: 'Ao1000', data: cachedAos[1000], borderColor: '#10b981', borderWidth: 2.8 }
+    ].filter(ds => ds.data !== null);
+
+    datasets.forEach(ds => {
+      ds.pointRadius = 0;
+      ds.pointHoverRadius = 4;
+      ds.tension = 0.1;
+    });
+
+    if (trendChartInst) trendChartInst.destroy();
+    trendChartInst = new Chart(document.getElementById('trendChart'), {
+      type: 'line',
+      data: { labels, datasets },
+      options: {
+        animation: false,
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { labels: { color: '#cbd5e1', font: { size: 12 } } },
+          tooltip: {
+            callbacks: {
+              title: (items) => `${i18n[currentLang].tooltipSolve}${items[0].label}`,
+              label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y !== null ? ctx.parsed.y.toFixed(2) + ' ' + i18n[currentLang].cutoffUnit : 'DNF'}`
+            }
+          }
+        },
+        scales: {
+          y: {
+            max: cutoff + 0.5,
+            grid: { color: '#334155' },
+            ticks: { color: '#94a3b8' },
+            title: { display: true, text: t.trendY, color: '#94a3b8' }
+          },
+          x: {
+            grid: { display: false },
+            ticks: { color: '#94a3b8', maxTicksLimit: 15 },
+            title: { display: true, text: t.trendX, color: '#94a3b8' }
+          }
+        }
+      }
+    });
+  }
+
+  function updateDashboard() {
+    const t = i18n[currentLang];
+    const cutoff = parseFloat(cutoffInput.value) || 25.0;
+    const showLabels = showLabelsToggle.checked;
+    const total = rawSolves.length;
+
+    const completed = rawSolves.filter(s => Number.isFinite(s.time));
+    const clean = completed.filter(s => s.time < cutoff);
+
+    const dnfCount = rawSolves.filter(s => s.isDnf).length;
+    const plus2Count = rawSolves.filter(s => s.isPlus2).length;
+    const removedCount = total - clean.length;
+
+    // Карточка 1: Объемы
+    document.getElementById('colVolume').innerHTML = `
+      <li><span>${t.totalSolves}</span><span class="val">${total}</span></li>
+      <li><span>${t.dnf}</span><span class="val" style="color: var(--danger)">${dnfCount} (${(dnfCount/total*100).toFixed(2)}%)</span></li>
+      <li><span>${t.plus2}</span><span class="val" style="color: var(--warning)">${plus2Count} (${(plus2Count/total*100).toFixed(2)}%)</span></li>
+      <li><span>${t.inDist} (< ${cutoff.toFixed(1)}${t.cutoffUnit}):</span><span class="val">${clean.length}</span></li>
+      <li><span>${t.filtered}</span><span class="val">${removedCount} (${(removedCount/total*100).toFixed(1)}%)</span></li>
+    `;
+
+    // Карточка 2: Single метрики
+    if (completed.length) {
+      const cTimes = completed.map(s => s.time);
+      const pb = Math.min(...cTimes);
+      const worst = Math.max(...cTimes);
+      const mean = cTimes.reduce((a, b) => a + b, 0) / cTimes.length;
+      
+      const sorted = [...cTimes].sort((a, b) => a - b);
+      const mid = Math.floor(sorted.length / 2);
+      const median = sorted.length % 2 !== 0 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
+      const variance = cTimes.reduce((acc, v) => acc + Math.pow(v - mean, 2), 0) / cTimes.length;
+      const std = Math.sqrt(variance);
+
+      document.getElementById('colSingle').innerHTML = `
+        <li><span>${t.pb}</span><span class="val" style="color: var(--success)">${pb.toFixed(2)} ${t.cutoffUnit}</span></li>
+        <li><span>${t.mean}</span><span class="val">${mean.toFixed(2)} ${t.cutoffUnit}</span></li>
+        <li><span>${t.median}</span><span class="val">${median.toFixed(2)} ${t.cutoffUnit}</span></li>
+        <li><span>${t.std}</span><span class="val">${std.toFixed(2)} ${t.cutoffUnit}</span></li>
+        <li><span>${t.worst}</span><span class="val" style="color: var(--danger)">${worst.toFixed(2)} ${t.cutoffUnit}</span></li>
+      `;
+    }
+
+    // Карточка 3: Рекорды средних
+    const windows = [5, 12, 100, 500, 1000];
+    document.getElementById('colAverages').innerHTML = windows.map(w => {
+      const val = cachedBestAos[w];
+      const displayVal = (val && val !== 'N/A' && val !== 'DNF') ? `${parseFloat(val).toFixed(2)} ${t.cutoffUnit}` : val;
+      return `<li><span>Best Ao${w}:</span><span class="val">${displayVal}</span></li>`;
+    }).join('');
+
+    // --- Гистограмма ---
+    document.getElementById('histTitle').textContent = `${t.histTitle} (< ${cutoff.toFixed(1)} ${t.cutoffUnit})`;
+    const groups = {};
+    clean.forEach(s => {
+      const sec = Math.floor(s.time);
+      groups[sec] = (groups[sec] || 0) + 1;
+    });
+
+    const groupKeys = Object.keys(groups).map(Number);
+    const minSec = groupKeys.length ? Math.min(...groupKeys) : 8;
+    const maxSec = groupKeys.length ? Math.max(...groupKeys) : Math.floor(cutoff);
+
+    const histLabels = [];
+    const histData = [];
+    const histColors = [];
+
+    for (let sec = minSec; sec <= maxSec; sec++) {
+      histLabels.push(`${sec}.xx`);
+      const count = groups[sec] || 0;
+      histData.push(count);
+      histColors.push(getGradientColor(sec, minSec, maxSec));
+    }
+
+    if (histChartInst) histChartInst.destroy();
+    histChartInst = new Chart(document.getElementById('histChart'), {
+      type: 'bar',
+      data: {
+        labels: histLabels,
+        datasets: [{
+          data: histData,
+          backgroundColor: histColors,
+          borderRadius: 4
+        }]
+      },
+      plugins: [barLabelPlugin],
+      options: {
+        animation: false,
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          barLabelPlugin: { show: showLabels },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => `${t.countLabel} ${ctx.parsed.y}`
+            }
+          }
+        },
+        scales: {
+          y: {
+            grace: showLabels ? '12%' : 0,
+            grid: { color: '#334155' },
+            ticks: { color: '#94a3b8' },
+            title: { display: true, text: t.histY, color: '#94a3b8' }
+          },
+          x: {
+            grid: { display: false },
+            ticks: { color: '#94a3b8' },
+            title: { display: true, text: t.histX, color: '#94a3b8' }
+          }
+        }
+      }
+    });
+
+    // --- Обновление масштаба шкалы тренда ---
+    if (trendChartInst) {
+      trendChartInst.options.scales.y.max = cutoff + 0.5;
+      trendChartInst.options.scales.y.title.text = t.trendY;
+      trendChartInst.options.scales.x.title.text = t.trendX;
+      trendChartInst.update('none');
+    }
+  }
+
+  setLang(currentLang);
+</script>
+
+</body>
+</html>
