@@ -96,7 +96,6 @@
     .drop-zone input { display: none; }
     .drop-zone p { color: var(--text-muted); margin-top: 6px; font-size: 0.9rem; }
 
-    /* Loaded file badge inside drop-zone */
     .file-badge {
       display: inline-flex;
       align-items: center;
@@ -151,19 +150,23 @@
       padding: 20px;
     }
 
-    /* Chart Header with embedded Toolbar */
     .chart-header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
       gap: 16px;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
-    .chart-header h2 {
-      font-size: 1.1rem;
-      font-weight: 600;
+    .chart-header h2 { font-size: 1.1rem; font-weight: 600; }
+    
+    .chart-subhint {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: normal;
+      margin-left: 8px;
     }
+
     .hist-toolbar {
       display: flex;
       align-items: center;
@@ -230,6 +233,235 @@
       height: 380px;
       width: 100%;
     }
+
+    /* Milestone Chips Ribbon */
+    .milestones-ribbon {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding: 2px 2px 10px 2px;
+      margin-bottom: 10px;
+      scrollbar-width: thin;
+      scrollbar-color: var(--border) transparent;
+    }
+    .milestones-ribbon::-webkit-scrollbar {
+      height: 6px;
+    }
+    .milestones-ribbon::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .milestones-ribbon::-webkit-scrollbar-thumb {
+      background: var(--border);
+      border-radius: 4px;
+    }
+    .milestone-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 0.82rem;
+      font-family: monospace;
+      color: #e2e8f0;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+      user-select: none;
+    }
+    .milestone-chip:hover {
+      border-color: var(--success);
+      background: #1e293b;
+      transform: translateY(-1px);
+    }
+    .milestone-chip.active {
+      background: #064e3b;
+      border-color: var(--success);
+      color: #34d399;
+      font-weight: bold;
+    }
+    .milestone-chip .chip-num {
+      color: var(--text-muted);
+    }
+    .milestone-chip .chip-drop {
+      color: var(--success);
+      font-size: 0.75rem;
+    }
+
+    /* Solve Inspector Box */
+    .inspector-box {
+      display: none;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+    }
+    .inspector-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 16px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+    .inspector-nav {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .arrow-btn-group {
+      display: inline-flex;
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      overflow: hidden;
+    }
+    .arrow-btn {
+      background: transparent;
+      border: none;
+      color: var(--text);
+      padding: 6px 14px;
+      font-size: 0.95rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s;
+    }
+    .arrow-btn:first-child {
+      border-right: 1px solid var(--border);
+    }
+    .arrow-btn:hover:not(:disabled) {
+      background: var(--primary);
+      color: #fff;
+    }
+    .arrow-btn:disabled, .nav-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+    .nav-btn {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s;
+    }
+    .nav-btn:hover:not(:disabled) {
+      background: #1e293b;
+      border-color: var(--primary);
+    }
+    .inspector-search {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .inspector-search input {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      color: #fff;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      width: 90px;
+      outline: none;
+    }
+
+    .inspector-details {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+    @media (max-width: 650px) {
+      .inspector-details { grid-template-columns: 1fr; }
+    }
+
+    .solve-time-badge {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px 24px;
+      min-width: 185px;
+      text-align: center;
+    }
+    .solve-time-badge .num {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-bottom: 4px;
+    }
+    .solve-time-badge .time {
+      font-size: 2.2rem;
+      font-weight: 700;
+      font-family: monospace;
+      color: #fff;
+    }
+    .badge-tags {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-top: 6px;
+      align-items: center;
+    }
+    .status-tag {
+      font-size: 0.75rem;
+      font-weight: bold;
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+
+    .solve-meta {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .meta-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      font-size: 0.92rem;
+    }
+    .meta-label {
+      color: var(--text-muted);
+      min-width: 100px;
+    }
+    .scramble-box {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-family: monospace;
+      font-size: 0.92rem;
+      line-height: 1.4;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      word-break: break-word;
+    }
+    .btn-copy {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s, color 0.15s;
+    }
+    .btn-copy:hover {
+      background: var(--primary);
+      color: #fff;
+    }
   </style>
 </head>
 <body>
@@ -282,8 +514,6 @@
   <div class="chart-box" id="histBox">
     <div class="chart-header">
       <h2 id="histTitle">Solves Distribution by Seconds</h2>
-      
-      <!-- Toolbar placed directly with histogram -->
       <div class="hist-toolbar">
         <div class="toolbar-group">
           <label for="cutoffSlider" id="tCutoffLabel">Cutoff:</label>
@@ -302,7 +532,6 @@
         </div>
       </div>
     </div>
-
     <div class="canvas-wrapper">
       <canvas id="histChart"></canvas>
     </div>
@@ -311,12 +540,100 @@
   <!-- Progress Chart -->
   <div class="chart-box" id="trendBox">
     <div class="chart-header">
-      <h2 id="trendTitle">Session Progress (WCA Trimmed Ao)</h2>
+      <h2>
+        <span id="trendTitle">Session Progress (WCA Trimmed Ao)</span>
+        <span class="chart-subhint" id="tClickHint">— click any point to inspect solve</span>
+      </h2>
     </div>
     <div class="canvas-wrapper">
       <canvas id="trendChart"></canvas>
     </div>
   </div>
+
+  <!-- Interactive Solve Inspector -->
+  <div class="inspector-box" id="inspectorBox">
+    <div class="inspector-toolbar">
+      <div class="inspector-nav">
+        <strong id="tInspTitle">Solve Inspector</strong>
+        
+        <div class="arrow-btn-group">
+          <button class="arrow-btn" id="btnPrevNav" onclick="prevSolve()" title="Previous solve (←)">←</button>
+          <button class="arrow-btn" id="btnNextNav" onclick="nextSolve()" title="Next solve (→)">→</button>
+        </div>
+
+        <button class="nav-btn" onclick="inspectPb()" id="btnPbNav">PB Single</button>
+        <button class="nav-btn" onclick="inspectWorst()" id="btnWorstNav">Worst Solve</button>
+        <button class="nav-btn" onclick="inspectRandom()" id="btnRandomNav">Random</button>
+      </div>
+      <div class="inspector-search">
+        <input type="number" id="searchSolveNum" placeholder="# Solve" min="1">
+        <button class="nav-btn" onclick="searchSolveSubmit()" id="btnSearchNav">Go</button>
+      </div>
+    </div>
+
+    <div class="inspector-details">
+      <div class="solve-time-badge">
+        <span class="num" id="inspNum">Solve #1</span>
+        <span class="time" id="inspTime">--.--</span>
+        <div class="badge-tags">
+          <span class="status-tag" id="inspPercentileTag" style="display: none;"></span>
+          <span class="status-tag" id="inspPenaltyTag" style="display: none;"></span>
+        </div>
+      </div>
+
+      <div class="solve-meta">
+        <div class="meta-row">
+          <span class="meta-label" id="tInspDate">Date & Time:</span>
+          <span id="inspDate">—</span>
+        </div>
+        <div class="meta-row" id="rowComment" style="display: none;">
+          <span class="meta-label" id="tInspComment">Comment:</span>
+          <span id="inspComment" style="color: var(--warning); font-style: italic;"></span>
+        </div>
+        <div class="meta-row" style="flex-direction: column; gap: 6px; align-items: stretch;">
+          <span class="meta-label" id="tInspScramble">Scramble:</span>
+          <div class="scramble-box">
+            <span id="inspScramble">—</span>
+            <button class="btn-copy" id="btnCopyScramble" onclick="copyScramble()">Copy</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PB Progression Chart (Full Width) -->
+  <div class="chart-box" id="pbProgBox">
+    <div class="chart-header">
+      <h2>
+        <span id="pbProgTitle">PB Progression Milestones</span>
+        <span class="chart-subhint" id="pbMilestonesCount"></span>
+      </h2>
+    </div>
+    <!-- Лента вех с быстрыми кликами по рекордам -->
+    <div class="milestones-ribbon" id="pbRibbon"></div>
+    <div class="canvas-wrapper">
+      <canvas id="pbChart"></canvas>
+    </div>
+  </div>
+
+  <!-- Time of Day Chart (Full Width) -->
+  <div class="chart-box" id="hourlyBox">
+    <div class="chart-header">
+      <h2 id="hourlyTitle">Average Speed by Time of Day</h2>
+      <div class="hist-toolbar">
+        <div class="toolbar-group">
+          <label for="minSolvesInput" id="tMinSolvesLabel">Min solves/hour:</label>
+          <div class="input-wrapper">
+            <input type="number" id="minSolvesInput" min="1" max="50" step="1" value="5">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="canvas-wrapper">
+      <canvas id="hourlyChart"></canvas>
+    </div>
+  </div>
+
 </div>
 
 <script>
@@ -324,14 +641,25 @@
   let rawSolves = [];
   let cachedAos = {};
   let cachedBestAos = {};
+  let currentInspectedIndex = 0;
+  let cachedMilestones = [];
+
+  let sessionP25 = 0;
+  let sessionP75 = 0;
+  let sessionPb = 0;
+  let sessionWorst = 0;
+
   let histChartInst = null;
   let trendChartInst = null;
+  let pbChartInst = null;
+  let hourlyChartInst = null;
 
   const csTimerLinkHtml = '<a href="https://cstimer.net/" target="_blank" rel="noopener noreferrer" class="cstimer-link" onclick="event.stopPropagation()">csTimer</a>';
 
   const i18n = {
     ru: {
-      title: 'Speedcubing Session Analyzer',
+      pageTitle: 'Анализатор сессий спидкубинга — Дашборд',
+      title: 'Анализатор сессий спидкубинга',
       subtitle: `Интерактивные графики, динамика прогресса и WCA-статистика сборок из ${csTimerLinkHtml}`,
       dropTitle: `Перетащи сюда .csv файл из ${csTimerLinkHtml}`,
       dropSub: 'или нажми для выбора файла на компьютере',
@@ -340,28 +668,60 @@
       cutoffUnit: 'с',
       showLabels: 'Числа на столбиках',
       cardVol: 'Объем данных и штрафы',
-      cardSingle: 'Метрики Single',
+      cardSingle: 'Одиночные сборки (Single)',
       cardAo: 'Лучшие WCA Средние',
       totalSolves: 'Всего попыток:',
       dnf: 'DNF (незачет):',
       plus2: 'Штраф (+2):',
       inDist: 'В гистограмме',
       filtered: 'Отсеяно (фейлы/DNF):',
-      pb: 'PB (Single):',
-      mean: 'Среднее (Mean):',
+      pb: 'Лучшая попытка (PB):',
+      mean: 'Среднее (Mean)',
       median: 'Медиана:',
       std: 'Станд. откл. (σ):',
-      worst: 'Худшее (без DNF):',
+      worst: 'Худшая сборка (без DNF):',
       histTitle: 'Распределение успешных сборок по секундам',
       trendTitle: 'Прогресс за всю сессию (WCA Trimmed Ao)',
+      clickHint: '— кликните по точке, чтобы изучить сборку',
       histX: 'Группа времени (секунды)',
       histY: 'Количество сборок',
       trendX: 'Номер сборки (по порядку)',
       trendY: 'Время (сек)',
       tooltipSolve: 'Сборка #',
-      countLabel: 'Сборок:'
+      countLabel: 'Сборок:',
+      // Инспектор и бейджи
+      inspTitle: 'Инспектор сборки',
+      btnPrevTitle: 'Предыдущая сборка (←)',
+      btnNextTitle: 'Следующая сборка (→)',
+      btnPb: 'Лучшая сборка',
+      btnWorst: 'Худшая сборка',
+      btnRandom: 'Случайная',
+      btnGo: 'Перейти',
+      searchPlaceholder: '№ сборки',
+      inspDate: 'Дата и время:',
+      inspComment: 'Комментарий:',
+      inspScramble: 'Скрамбл:',
+      copy: 'Скопировать',
+      copied: 'Скопировано!',
+      tagPb: '🏆 Личный рекорд',
+      tagTop25: '⚡ Топ 25% (Быстрая)',
+      tagBottom25: '🐢 Худшие 25% (Медленная)',
+      tagWorst: '⚠️ Худшая сборка',
+      // Графики
+      pbProgTitle: 'Хроника рекордов',
+      pbProgY: 'Время рекорда (сек)',
+      formatRecordsCount: (count) => `(Всего установлено рекордов: ${count})`,
+      currentPb: 'Текущий рекорд',
+      clickToInspect: 'Нажмите, чтобы открыть сборку в инспекторе',
+      hourlyTitle: 'Скорость по времени суток',
+      hourlyX: 'Час суток',
+      hourlyY: 'Среднее время (сек)',
+      minSolvesLabel: 'Мин. сборок в час:',
+      smallSampleWarning: '⚠️ Мало сборок (выборка < порога)',
+      hourLabel: ':00'
     },
     en: {
+      pageTitle: 'Speedcubing Session Dashboard',
       title: 'Speedcubing Session Analyzer',
       subtitle: `Interactive charts, session trends, and WCA averages from your ${csTimerLinkHtml} exports`,
       dropTitle: `Drag & drop ${csTimerLinkHtml} .csv file here`,
@@ -379,18 +739,49 @@
       inDist: 'In distribution',
       filtered: 'Filtered out (fails/DNF):',
       pb: 'PB (Single):',
-      mean: 'Mean:',
+      mean: 'Mean',
       median: 'Median:',
       std: 'Std. Dev. (σ):',
       worst: 'Worst (excl. DNF):',
       histTitle: 'Solves Distribution by Seconds',
       trendTitle: 'Session Progress (WCA Trimmed Ao)',
+      clickHint: '— click any point to inspect solve',
       histX: 'Time Group (seconds)',
       histY: 'Number of Solves',
       trendX: 'Solve Number',
       trendY: 'Time (s)',
       tooltipSolve: 'Solve #',
-      countLabel: 'Solves:'
+      countLabel: 'Solves:',
+      // Inspector & Badges
+      inspTitle: 'Solve Inspector',
+      btnPrevTitle: 'Previous solve (←)',
+      btnNextTitle: 'Next solve (→)',
+      btnPb: 'PB Single',
+      btnWorst: 'Worst Solve',
+      btnRandom: 'Random',
+      btnGo: 'Go',
+      searchPlaceholder: '# Solve',
+      inspDate: 'Date & Time:',
+      inspComment: 'Comment:',
+      inspScramble: 'Scramble:',
+      copy: 'Copy',
+      copied: 'Copied!',
+      tagPb: '🏆 Personal Best',
+      tagTop25: '⚡ Top 25% (Fast)',
+      tagBottom25: '🐢 Bottom 25% (Slow)',
+      tagWorst: '⚠️ Worst Solve',
+      // Charts
+      pbProgTitle: 'PB Progression Milestones',
+      pbProgY: 'Record Time (s)',
+      formatRecordsCount: (count) => `(${count} records set)`,
+      currentPb: 'Current PB',
+      clickToInspect: 'Click to open in inspector',
+      hourlyTitle: 'Average Speed by Time of Day',
+      hourlyX: 'Hour of Day',
+      hourlyY: 'Average Time (s)',
+      minSolvesLabel: 'Min solves/hour:',
+      smallSampleWarning: '⚠️ Low sample size (< threshold)',
+      hourLabel: ':00'
     }
   };
 
@@ -407,9 +798,7 @@
 
       chart.getDatasetMeta(0).data.forEach((bar, index) => {
         const val = data.datasets[0].data[index];
-        if (val > 0) {
-          ctx.fillText(val, bar.x, bar.y - 3);
-        }
+        if (val > 0) ctx.fillText(val, bar.x, bar.y - 3);
       });
       ctx.restore();
     }
@@ -423,12 +812,16 @@
     applyTranslations();
     if (rawSolves.length) {
       buildTrendChart();
+      buildPbProgressionChart();
+      buildHourlyChart();
       updateDashboard();
+      displaySolveDetails(currentInspectedIndex);
     }
   }
 
   function applyTranslations() {
     const t = i18n[currentLang];
+    document.title = t.pageTitle;
     document.getElementById('tTitle').textContent = t.title;
     document.getElementById('tSubtitle').innerHTML = t.subtitle;
     document.getElementById('tDropTitle').innerHTML = t.dropTitle;
@@ -441,23 +834,57 @@
     document.getElementById('tCardSingle').textContent = t.cardSingle;
     document.getElementById('tCardAo').textContent = t.cardAo;
     document.getElementById('trendTitle').textContent = t.trendTitle;
+    document.getElementById('tClickHint').textContent = t.clickHint;
+
+    // Inspector
+    document.getElementById('tInspTitle').textContent = t.inspTitle;
+    document.getElementById('btnPrevNav').title = t.btnPrevTitle;
+    document.getElementById('btnNextNav').title = t.btnNextTitle;
+    document.getElementById('btnPbNav').textContent = t.btnPb;
+    document.getElementById('btnWorstNav').textContent = t.btnWorst;
+    document.getElementById('btnRandomNav').textContent = t.btnRandom;
+    document.getElementById('btnSearchNav').textContent = t.btnGo;
+    document.getElementById('searchSolveNum').placeholder = t.searchPlaceholder;
+    document.getElementById('tInspDate').textContent = t.inspDate;
+    document.getElementById('tInspComment').textContent = t.inspComment;
+    document.getElementById('tInspScramble').textContent = t.inspScramble;
+    document.getElementById('btnCopyScramble').textContent = t.copy;
+
+    // Charts
+    document.getElementById('pbProgTitle').textContent = t.pbProgTitle;
+    if (rawSolves.length) {
+      document.getElementById('pbMilestonesCount').textContent = t.formatRecordsCount(cachedMilestones.length);
+    }
+    document.getElementById('hourlyTitle').textContent = t.hourlyTitle;
+    document.getElementById('tMinSolvesLabel').textContent = t.minSolvesLabel;
   }
 
   const cutoffSlider = document.getElementById('cutoffSlider');
   const cutoffInput = document.getElementById('cutoffInput');
   const showLabelsToggle = document.getElementById('showLabelsToggle');
+  const minSolvesInput = document.getElementById('minSolvesInput');
 
   cutoffSlider.addEventListener('input', (e) => {
     cutoffInput.value = parseFloat(e.target.value).toFixed(1);
-    if (rawSolves.length) updateDashboard();
+    if (rawSolves.length) {
+      updateDashboard();
+      buildHourlyChart();
+    }
   });
 
   cutoffInput.addEventListener('input', (e) => {
     let val = parseFloat(e.target.value);
     if (!isNaN(val) && val >= 5) {
       cutoffSlider.value = Math.min(val, 180);
-      if (rawSolves.length) updateDashboard();
+      if (rawSolves.length) {
+        updateDashboard();
+        buildHourlyChart();
+      }
     }
+  });
+
+  minSolvesInput.addEventListener('input', () => {
+    if (rawSolves.length) buildHourlyChart();
   });
 
   showLabelsToggle.addEventListener('change', () => {
@@ -517,21 +944,55 @@
         rawSolves = data.map((row, idx) => {
           const parsed = parseTimeToken(row['Time']);
           return {
-            no: row['No.'] || (idx + 1),
+            index: idx,
+            no: row['No.'] ? parseInt(row['No.'], 10) : (idx + 1),
             time: parsed.time,
             isDnf: parsed.isDnf,
-            isPlus2: parsed.isPlus2
+            isPlus2: parsed.isPlus2,
+            comment: (row['Comment'] || '').trim(),
+            scramble: (row['Scramble'] || '').trim(),
+            date: (row['Date'] || '').trim()
           };
         });
+
+        cachedMilestones = [];
+        let currentMin = Infinity;
+        rawSolves.forEach(s => {
+          if (Number.isFinite(s.time) && s.time < currentMin) {
+            const drop = currentMin === Infinity ? 0 : (currentMin - s.time);
+            currentMin = s.time;
+            cachedMilestones.push({
+              no: s.no,
+              time: currentMin,
+              drop: drop,
+              index: s.index
+            });
+          }
+        });
+
+        const validTimes = rawSolves.filter(s => Number.isFinite(s.time)).map(s => s.time).sort((a, b) => a - b);
+        if (validTimes.length) {
+          sessionPb = validTimes[0];
+          sessionWorst = validTimes[validTimes.length - 1];
+          sessionP25 = validTimes[Math.floor(validTimes.length * 0.25)] || sessionPb;
+          sessionP75 = validTimes[Math.floor(validTimes.length * 0.75)] || sessionWorst;
+        }
 
         precomputeWcaAos();
 
         document.getElementById('statsGrid').style.display = 'grid';
         document.getElementById('histBox').style.display = 'block';
         document.getElementById('trendBox').style.display = 'block';
+        document.getElementById('inspectorBox').style.display = 'block';
+        document.getElementById('pbProgBox').style.display = 'block';
+        document.getElementById('hourlyBox').style.display = 'block';
 
         buildTrendChart();
+        buildPbProgressionChart();
+        buildHourlyChart();
         updateDashboard();
+
+        inspectPb();
       }
     });
   }
@@ -596,6 +1057,7 @@
     return `rgb(${r}, ${g}, ${b})`;
   }
 
+  // --- ГРАФИК 1: Тренд ---
   function buildTrendChart() {
     const t = i18n[currentLang];
     const labels = rawSolves.map(s => s.no);
@@ -611,7 +1073,7 @@
 
     datasets.forEach(ds => {
       ds.pointRadius = 0;
-      ds.pointHoverRadius = 4;
+      ds.pointHoverRadius = 5;
       ds.tension = 0.1;
     });
 
@@ -624,6 +1086,13 @@
         responsive: true,
         maintainAspectRatio: false,
         interaction: { mode: 'index', intersect: false },
+        onClick: (evt) => {
+          const points = trendChartInst.getElementsAtEventForMode(evt, 'index', { intersect: false }, true);
+          if (points.length) {
+            displaySolveDetails(points[0].index);
+            document.getElementById('inspectorBox').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+          }
+        },
         plugins: {
           legend: { labels: { color: '#cbd5e1', font: { size: 12 } } },
           tooltip: {
@@ -650,6 +1119,400 @@
     });
   }
 
+  // --- ГРАФИК 2: Хроника рекордов (Без срезанных краев точек) ---
+  function buildPbProgressionChart() {
+    const t = i18n[currentLang];
+    const total = rawSolves.length;
+
+    document.getElementById('pbMilestonesCount').textContent = t.formatRecordsCount(cachedMilestones.length);
+
+    // 1. Лента вех
+    const ribbonEl = document.getElementById('pbRibbon');
+    ribbonEl.innerHTML = cachedMilestones.map(m => {
+      const dropHtml = m.drop > 0 ? `<span class="chip-drop">(-${m.drop.toFixed(2)}${t.cutoffUnit})</span>` : '';
+      return `
+        <div class="milestone-chip" data-index="${m.index}" onclick="selectMilestoneChip(${m.index})" title="${t.clickToInspect}">
+          <span class="chip-num">#${m.no}</span>
+          <span>${m.time.toFixed(2)}${t.cutoffUnit}</span>
+          ${dropHtml}
+        </div>
+      `;
+    }).join('');
+
+    // 2. Линейный датасет
+    const chartPoints = [];
+    const radii = [];
+    const hoverRadii = [];
+    const hitRadii = [];
+
+    cachedMilestones.forEach(m => {
+      chartPoints.push({ x: m.no, y: m.time, milestone: m });
+      radii.push(7);
+      hoverRadii.push(11);
+      hitRadii.push(35);
+    });
+
+    if (cachedMilestones.length && cachedMilestones[cachedMilestones.length - 1].no < total) {
+      chartPoints.push({
+        x: total,
+        y: cachedMilestones[cachedMilestones.length - 1].time,
+        isEnd: true
+      });
+      radii.push(0);
+      hoverRadii.push(0);
+      hitRadii.push(0);
+    }
+
+    if (pbChartInst) pbChartInst.destroy();
+    pbChartInst = new Chart(document.getElementById('pbChart'), {
+      type: 'line',
+      data: {
+        datasets: [{
+          label: t.pbProgTitle,
+          data: chartPoints,
+          borderColor: '#10b981',
+          borderWidth: 2.5,
+          stepped: 'after',
+          fill: true,
+          backgroundColor: 'rgba(16, 185, 129, 0.08)',
+          clip: false, // Отключает обрезку кружков на левой границе
+          pointRadius: radii,
+          pointHoverRadius: hoverRadii,
+          pointHitRadius: hitRadii,
+          pointBackgroundColor: '#10b981',
+          pointBorderColor: '#ffffff',
+          pointBorderWidth: 2
+        }]
+      },
+      options: {
+        animation: false,
+        responsive: true,
+        maintainAspectRatio: false,
+        layout: {
+          // Внутренний отступ холста для свободного отображения точек
+          padding: { left: 12, right: 16, top: 12, bottom: 6 }
+        },
+        interaction: {
+          mode: 'nearest',
+          intersect: true
+        },
+        onHover: (evt, elements) => {
+          const canvas = evt.chart.canvas;
+          const isOverMilestone = elements.length > 0 && !chartPoints[elements[0].index]?.isEnd;
+          canvas.style.cursor = isOverMilestone ? 'pointer' : 'default';
+        },
+        onClick: (evt) => {
+          const points = pbChartInst.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true);
+          if (points.length) {
+            const pt = chartPoints[points[0].index];
+            if (pt && !pt.isEnd) {
+              displaySolveDetails(pt.milestone.index);
+              document.getElementById('inspectorBox').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+          }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            displayColors: false,
+            callbacks: {
+              title: (items) => {
+                const pt = chartPoints[items[0].dataIndex];
+                return pt && !pt.isEnd ? `${t.tooltipSolve}${pt.milestone.no}` : '';
+              },
+              label: (ctx) => {
+                const pt = chartPoints[ctx.dataIndex];
+                if (!pt || pt.isEnd) return '';
+                const m = pt.milestone;
+                const lines = [`${t.tagPb}: ${m.time.toFixed(2)} ${t.cutoffUnit}`];
+                if (m.drop > 0) lines.push(`🎉 -${m.drop.toFixed(2)} ${t.cutoffUnit}`);
+                lines.push(`👉 ${t.clickToInspect}`);
+                return lines;
+              }
+            }
+          }
+        },
+        scales: {
+          y: {
+            grace: '6%', // Запас сверху, чтобы верхняя точка не резалась
+            grid: { color: '#334155' },
+            ticks: { color: '#94a3b8', padding: 12 }, // Отступ от чисел оси
+            title: { display: true, text: t.pbProgY, color: '#94a3b8' }
+          },
+          x: {
+            type: 'linear',
+            min: 1,
+            max: total,
+            grid: { display: false },
+            ticks: { color: '#94a3b8', maxTicksLimit: 15, precision: 0 },
+            title: { display: true, text: t.trendX, color: '#94a3b8' }
+          }
+        }
+      }
+    });
+  }
+
+  function selectMilestoneChip(solveIndex) {
+    displaySolveDetails(solveIndex);
+    document.getElementById('inspectorBox').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+
+  // --- ГРАФИК 3: Скорость по часам суток ---
+  function buildHourlyChart() {
+    const t = i18n[currentLang];
+    const cutoff = parseFloat(cutoffInput.value) || 25.0;
+    const minSolves = parseInt(minSolvesInput.value, 10) || 1;
+    const hourBuckets = Array.from({ length: 24 }, () => ({ sum: 0, count: 0 }));
+
+    rawSolves.forEach(s => {
+      if (!s.date || !Number.isFinite(s.time) || s.time >= cutoff) return;
+      const match = s.date.match(/\b(\d{1,2}):\d{2}:\d{2}\b/);
+      if (match) {
+        const hour = parseInt(match[1], 10);
+        if (hour >= 0 && hour < 24) {
+          hourBuckets[hour].sum += s.time;
+          hourBuckets[hour].count += 1;
+        }
+      }
+    });
+
+    const labels = [];
+    const avgData = [];
+    const countData = [];
+
+    for (let h = 0; h < 24; h++) {
+      labels.push(`${String(h).padStart(2, '0')}${t.hourLabel}`);
+      const b = hourBuckets[h];
+      avgData.push(b.count > 0 ? +(b.sum / b.count).toFixed(2) : null);
+      countData.push(b.count);
+    }
+
+    const representativeAvgs = [];
+    for (let h = 0; h < 24; h++) {
+      if (countData[h] >= minSolves && avgData[h] !== null) {
+        representativeAvgs.push(avgData[h]);
+      }
+    }
+
+    const minH = representativeAvgs.length ? Math.min(...representativeAvgs) : 10;
+    const maxH = representativeAvgs.length ? Math.max(...representativeAvgs) : 20;
+
+    const barColors = avgData.map((v, h) => {
+      if (v === null || countData[h] === 0) return '#1e293b';
+      if (countData[h] < minSolves) return '#475569';
+      return getGradientColor(v, minH, maxH);
+    });
+
+    if (hourlyChartInst) hourlyChartInst.destroy();
+    hourlyChartInst = new Chart(document.getElementById('hourlyChart'), {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [{
+          data: avgData,
+          backgroundColor: barColors,
+          borderRadius: 4
+        }]
+      },
+      options: {
+        animation: false,
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: { display: false },
+          tooltip: {
+            callbacks: {
+              label: (ctx) => {
+                const hour = ctx.dataIndex;
+                const count = countData[hour];
+                if (count === 0) return 'No solves';
+                const lines = [
+                  `${t.mean}: ${ctx.parsed.y} ${t.cutoffUnit}`,
+                  `${t.countLabel} ${count}`
+                ];
+                if (count < minSolves) lines.push(t.smallSampleWarning);
+                return lines;
+              }
+            }
+          }
+        },
+        scales: {
+          y: {
+            grid: { color: '#334155' },
+            ticks: { color: '#94a3b8' },
+            title: { display: true, text: t.hourlyY, color: '#94a3b8' }
+          },
+          x: {
+            grid: { display: false },
+            ticks: { color: '#94a3b8', maxTicksLimit: 12 },
+            title: { display: true, text: t.hourlyX, color: '#94a3b8' }
+          }
+        }
+      }
+    });
+  }
+
+  // --- ЛОГИКА ИНСПЕКТОРА СБОРКИ ---
+  function displaySolveDetails(index) {
+    if (index < 0 || index >= rawSolves.length) return;
+    currentInspectedIndex = index;
+    const s = rawSolves[index];
+    const t = i18n[currentLang];
+
+    document.getElementById('btnPrevNav').disabled = (index <= 0);
+    document.getElementById('btnNextNav').disabled = (index >= rawSolves.length - 1);
+
+    document.getElementById('searchSolveNum').value = s.no;
+    document.getElementById('inspNum').textContent = `${t.tooltipSolve}${s.no}`;
+
+    const chips = document.querySelectorAll('.milestone-chip');
+    chips.forEach(chip => {
+      const chipIndex = parseInt(chip.getAttribute('data-index'), 10);
+      chip.classList.toggle('active', chipIndex === index);
+    });
+
+    const timeEl = document.getElementById('inspTime');
+    const pTag = document.getElementById('inspPercentileTag');
+    const penaltyTag = document.getElementById('inspPenaltyTag');
+
+    pTag.style.display = 'none';
+    penaltyTag.style.display = 'none';
+
+    if (s.isDnf) {
+      timeEl.textContent = 'DNF';
+      timeEl.style.color = 'var(--danger)';
+      pTag.style.display = 'inline-block';
+      pTag.style.background = 'var(--danger)';
+      pTag.style.color = '#fff';
+      pTag.textContent = 'DNF';
+    } else {
+      timeEl.textContent = `${s.time.toFixed(2)}`;
+
+      if (s.time === sessionPb) {
+        timeEl.style.color = 'var(--success)';
+        pTag.style.display = 'inline-block';
+        pTag.style.background = 'var(--success)';
+        pTag.style.color = '#000';
+        pTag.textContent = t.tagPb;
+      } else if (s.time <= sessionP25) {
+        timeEl.style.color = 'var(--success)';
+        pTag.style.display = 'inline-block';
+        pTag.style.background = '#15803d';
+        pTag.style.color = '#fff';
+        pTag.textContent = t.tagTop25;
+      } else if (s.time === sessionWorst) {
+        timeEl.style.color = 'var(--danger)';
+        pTag.style.display = 'inline-block';
+        pTag.style.background = 'var(--danger)';
+        pTag.style.color = '#fff';
+        pTag.textContent = t.tagWorst;
+      } else if (s.time >= sessionP75) {
+        timeEl.style.color = 'var(--warning)';
+        pTag.style.display = 'inline-block';
+        pTag.style.background = '#854d0e';
+        pTag.style.color = '#fff';
+        pTag.textContent = t.tagBottom25;
+      } else {
+        timeEl.style.color = '#fff';
+      }
+
+      if (s.isPlus2) {
+        penaltyTag.style.display = 'inline-block';
+        penaltyTag.style.background = 'var(--warning)';
+        penaltyTag.style.color = '#000';
+        penaltyTag.textContent = '+2 Penalty';
+      }
+    }
+
+    document.getElementById('inspDate').textContent = s.date || '—';
+
+    const rowComment = document.getElementById('rowComment');
+    if (s.comment) {
+      rowComment.style.display = 'flex';
+      document.getElementById('inspComment').textContent = `"${s.comment}"`;
+    } else {
+      rowComment.style.display = 'none';
+    }
+
+    document.getElementById('inspScramble').textContent = s.scramble || '—';
+    document.getElementById('btnCopyScramble').textContent = t.copy;
+  }
+
+  function prevSolve() {
+    if (currentInspectedIndex > 0) {
+      displaySolveDetails(currentInspectedIndex - 1);
+    }
+  }
+
+  function nextSolve() {
+    if (currentInspectedIndex < rawSolves.length - 1) {
+      displaySolveDetails(currentInspectedIndex + 1);
+    }
+  }
+
+  window.addEventListener('keydown', (e) => {
+    if (['INPUT', 'TEXTAREA'].includes(document.activeElement.tagName)) return;
+    if (!rawSolves.length) return;
+
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      prevSolve();
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      nextSolve();
+    }
+  });
+
+  function copyScramble() {
+    const scramble = document.getElementById('inspScramble').textContent;
+    if (!scramble || scramble === '—') return;
+    navigator.clipboard.writeText(scramble).then(() => {
+      const btn = document.getElementById('btnCopyScramble');
+      btn.textContent = i18n[currentLang].copied;
+      setTimeout(() => btn.textContent = i18n[currentLang].copy, 1500);
+    });
+  }
+
+  function inspectPb() {
+    const completed = rawSolves.filter(s => Number.isFinite(s.time));
+    if (!completed.length) return;
+    const minTime = Math.min(...completed.map(s => s.time));
+    const bestSolve = completed.find(s => s.time === minTime);
+    if (bestSolve) displaySolveDetails(bestSolve.index);
+  }
+
+  function inspectWorst() {
+    const completed = rawSolves.filter(s => Number.isFinite(s.time));
+    if (!completed.length) return;
+    const maxTime = Math.max(...completed.map(s => s.time));
+    const worstSolve = completed.find(s => s.time === maxTime);
+    if (worstSolve) displaySolveDetails(worstSolve.index);
+  }
+
+  function inspectRandom() {
+    if (!rawSolves.length) return;
+    const randIdx = Math.floor(Math.random() * rawSolves.length);
+    displaySolveDetails(randIdx);
+  }
+
+  function searchSolveSubmit() {
+    const input = document.getElementById('searchSolveNum');
+    const val = parseInt(input.value, 10);
+    if (isNaN(val)) return;
+
+    const found = rawSolves.find(s => s.no === val);
+    if (found) {
+      displaySolveDetails(found.index);
+    } else {
+      alert(`Solve #${val} not found.`);
+    }
+  }
+
+  document.getElementById('searchSolveNum').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') searchSolveSubmit();
+  });
+
+  // --- ОБНОВЛЕНИЕ ГИСТОГРАММЫ И СТАТИСТИКИ ---
   function updateDashboard() {
     const t = i18n[currentLang];
     const cutoff = parseFloat(cutoffInput.value) || 25.0;
@@ -687,7 +1550,7 @@
 
       document.getElementById('colSingle').innerHTML = `
         <li><span>${t.pb}</span><span class="val" style="color: var(--success)">${pb.toFixed(2)} ${t.cutoffUnit}</span></li>
-        <li><span>${t.mean}</span><span class="val">${mean.toFixed(2)} ${t.cutoffUnit}</span></li>
+        <li><span>${t.mean}:</span><span class="val">${mean.toFixed(2)} ${t.cutoffUnit}</span></li>
         <li><span>${t.median}</span><span class="val">${median.toFixed(2)} ${t.cutoffUnit}</span></li>
         <li><span>${t.std}</span><span class="val">${std.toFixed(2)} ${t.cutoffUnit}</span></li>
         <li><span>${t.worst}</span><span class="val" style="color: var(--danger)">${worst.toFixed(2)} ${t.cutoffUnit}</span></li>
@@ -702,7 +1565,7 @@
       return `<li><span>Best Ao${w}:</span><span class="val">${displayVal}</span></li>`;
     }).join('');
 
-    // --- Гистограмма ---
+    // --- Обновление Гистограммы ---
     document.getElementById('histTitle').textContent = `${t.histTitle} (< ${cutoff.toFixed(1)} ${t.cutoffUnit})`;
     const groups = {};
     clean.forEach(s => {
@@ -766,7 +1629,7 @@
       }
     });
 
-    // --- Обновление масштаба шкалы тренда ---
+    // --- Обновление шкалы тренда ---
     if (trendChartInst) {
       trendChartInst.options.scales.y.max = cutoff + 0.5;
       trendChartInst.options.scales.y.title.text = t.trendY;
