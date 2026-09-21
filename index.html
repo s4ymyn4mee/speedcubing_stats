@@ -138,6 +138,68 @@
       box-shadow: 0 0 8px var(--success);
     }
 
+    /* Visual Export Guide */
+    .guide-box {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px 22px;
+      transition: opacity 0.3s ease;
+    }
+    .guide-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: #fff;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .guide-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 18px;
+    }
+    .guide-card {
+      background: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .step-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    .step-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+    .guide-img-container {
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 220px;
+    }
+    .guide-img-container img {
+      width: 100%;
+      height: 100%;
+      max-height: 270px;
+      object-fit: contain;
+      display: block;
+    }
+
     /* Stats Grid Cards */
     .stats-grid {
       display: none;
@@ -521,6 +583,36 @@
     <input type="file" id="fileInput" accept=".csv">
   </div>
 
+  <!-- Visual Guide: How to export CSV from csTimer (Hidden once loaded) -->
+  <div class="guide-box" id="exportGuide">
+    <div class="guide-title">
+      <span>📖</span>
+      <span id="tGuideTitle">How to export your CSV from csTimer</span>
+    </div>
+    <div class="guide-grid">
+      <div class="guide-card">
+        <div class="step-badge">
+          <span>1.</span>
+          <span id="tStep1Badge">Open Session Stats</span>
+        </div>
+        <p class="step-desc" id="tStep1Desc">In csTimer, click on the summary section at the bottom of the session sidebar.</p>
+        <div class="guide-img-container">
+          <img src="guide1.png" alt="csTimer sidebar session stats">
+        </div>
+      </div>
+      <div class="guide-card">
+        <div class="step-badge">
+          <span>2.</span>
+          <span id="tStep2Badge">Export CSV</span>
+        </div>
+        <p class="step-desc" id="tStep2Desc">In the opened statistics window, click the «Export CSV» button at the bottom.</p>
+        <div class="guide-img-container">
+          <img src="guide2.png" alt="csTimer Export CSV modal button">
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Cards with Metrics -->
   <div class="stats-grid" id="statsGrid">
     <div class="card">
@@ -692,6 +784,11 @@
       dropReplace: 'Нажмите или перетащите другой файл для замены',
       demoBtn: 'Попробовать на демо-данных (2300+ сборок)',
       demoLoading: 'Загрузка данных...',
+      guideTitle: 'Как экспортировать CSV из csTimer',
+      step1Badge: 'Шаг 1. Откройте статистику',
+      step1Desc: 'В csTimer нажмите на блок с общим числом сборок в нижней части боковой панели сессии.',
+      step2Badge: 'Шаг 2. Нажмите Export CSV',
+      step2Desc: 'В появившемся окне статистики нажмите кнопку «Export CSV» внизу по центру.',
       cutoffLabel: 'Отсечка:',
       cutoffUnit: 'с',
       showLabels: 'Числа на столбиках',
@@ -754,6 +851,11 @@
       dropReplace: 'Click or drop another file to replace',
       demoBtn: 'Try with sample data (2300+ solves)',
       demoLoading: 'Loading data...',
+      guideTitle: 'How to export CSV from csTimer',
+      step1Badge: 'Step 1. Open Session Stats',
+      step1Desc: 'In csTimer, click on the summary section at the bottom of the session sidebar.',
+      step2Badge: 'Step 2. Click Export CSV',
+      step2Desc: 'In the opened statistics modal, click the «Export CSV» button at the bottom center.',
       cutoffLabel: 'Cutoff:',
       cutoffUnit: 's',
       showLabels: 'Counts above bars',
@@ -852,6 +954,14 @@
     document.getElementById('tDropSub').textContent = t.dropSub;
     document.getElementById('tDropReplace').textContent = t.dropReplace;
     document.getElementById('tDemoBtn').textContent = t.demoBtn;
+
+    // Guide
+    document.getElementById('tGuideTitle').textContent = t.guideTitle;
+    document.getElementById('tStep1Badge').textContent = t.step1Badge;
+    document.getElementById('tStep1Desc').textContent = t.step1Desc;
+    document.getElementById('tStep2Badge').textContent = t.step2Badge;
+    document.getElementById('tStep2Desc').textContent = t.step2Desc;
+
     document.getElementById('tCutoffLabel').textContent = t.cutoffLabel;
     document.getElementById('tCutoffUnit').textContent = t.cutoffUnit;
     document.getElementById('tShowLabels').textContent = t.showLabels;
@@ -952,6 +1062,10 @@
     document.getElementById('fileNameDisplay').textContent = displayName;
     document.getElementById('dropInitial').style.display = 'none';
     document.getElementById('dropLoaded').style.display = 'block';
+
+    // Скрываем обучающий гайд после успешной загрузки данных
+    const exportGuide = document.getElementById('exportGuide');
+    if (exportGuide) exportGuide.style.display = 'none';
 
     Papa.parse(source, {
       header: true,
