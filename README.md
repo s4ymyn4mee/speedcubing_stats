@@ -11,14 +11,14 @@ Features a fully interactive, client-side **Web Dashboard** (hosted via GitHub P
 
 ---
 
-## Live Web Dashboard
+## 🌐 Live Web Dashboard
 
 Try the dashboard directly in your browser:  
 👉 **[Open Speedcubing Session Analyzer](https://s4ymyn4mee.github.io/speedcubing_stats/)**
 
 ---
 
-## Features
+## ✨ Features
 
 ### 1. Official WCA Trimmed Means
 * **Accurate Rolling Averages:** Computes rolling **Ao5**, **Ao12**, **Ao100**, **Ao500**, and **Ao1000** following official WCA and csTimer specifications:
@@ -126,7 +126,8 @@ python3 get_stat.py my_session.csv 22
 
 ---
 
-## 📊 Dashboard Preview
+## 📊 Python Dashboard Preview
+![Speedcubing Stats](speedcubing_stats.png)
 
 ---
 
